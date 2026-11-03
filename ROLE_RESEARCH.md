@@ -1,55 +1,50 @@
-# Oracle 345633 — company and role research
+# Oracle Principal Software Engineer, Core Infrastructure — role research
 
-Research date: October 8, 2026. Prepared separately from the public portfolio.
+Research date: November 2, 2026. This research is a separate supporting document; it is not portfolio copy. Resume claims below are attributed to the supplied resume and have not been independently audited.
 
-## Verified posting
+## Posting and role shape
 
-[Oracle requisition 345633](https://eeho.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/jobsearch/job/345633/) was read in Oracle’s candidate browser interface. Title: Principal Software Engineer, Core Infrastructure. Locations: Seattle, Washington and Santa Clara, California. Posted September 17, 2026. Regular individual-contributor position; the displayed experience band is 6–10+ years, and the posting says no security clearance is required.
+The official Oracle posting is [Principal Software Engineer, Core Infrastructure, requisition 345633](https://careers.oracle.com/en/sites/jobsearch/job/345633). It lists Seattle, Washington and Santa Clara, California, and describes a regular individual-contributor position. The posting's experience band is 6–10+ years. The work centers on core infrastructure and distributed systems: high-throughput data paths, system performance, resilient services, operational readiness, in-service changes, and debugging production behavior across hardware and software boundaries.
 
-The responsibilities span scalable distributed infrastructure, high-throughput data paths, resilient upgrades, operational telemetry, production diagnosis, mentoring, security remediation, and safe infrastructure changes. Requirements explicitly include C/C++, scripting, multi-threaded embedded Linux, firmware and hardware bring-up, kernel/driver work, Intel/AMD/ARM, network and storage technologies, P4/DOCA, and SR-IOV/VirtIO/vDPA. These are verified requirements. The interview themes below are my interpretation, not Oracle’s disclosed interview process.
+The breadth of the posting points to a principal-level engineer who can reason across the packet or storage path and the service lifecycle around it. Relevant topics include multithreaded C/C++, Linux, kernel and driver behavior, firmware and hardware bring-up, Intel/AMD/ARM, network and storage I/O, DPU/SmartNIC offload, P4/DOCA, virtualization, and availability under faults. The post also stresses safe changes, observability, remediation, collaboration, and mentoring. The current site's diagrams are conceptual illustrations, not Oracle architecture or live telemetry.
 
-## Company and infrastructure context
+## Oracle and OCI context
 
-Oracle’s cloud compute documentation exposes a concrete connection between hardware and service behavior. OCI offers hardware-assisted SR-IOV networking, and the recommended networking type depends on shape and image. Its Accelerated Paravirtualized networking uses a SmartNIC-native data plane to offload host CPU work, reduce hops and overhead, and improve performance consistency. This explains why a core infrastructure engineer must understand both host software and device paths. It does not establish that this team uses any particular Oracle shape or SmartNIC vendor. [Oracle compute networking](https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/instances.htm).
+Oracle Cloud Infrastructure is Oracle's cloud platform. Oracle describes OCI networking in terms of high performance, low latency, security, and isolation; its networking pages discuss RDMA/RoCE and large-scale GPU networking. These are company product claims and technical context, not claims about the exact team or its internal implementation. [Oracle Cloud Networking](https://www.oracle.com/cloud/networking/)
 
-Oracle also documents bare-metal BIOS choices for virtualization and I/O. Architecture-specific virtualization controls and the RDMA/IOMMU discussion demonstrate that software performance and isolation depend on hardware configuration. Configuration choices must be reviewed per supported shape and workload rather than generalized across the fleet. [Oracle BIOS settings](https://docs.oracle.com/en-us/iaas/Content/Compute/References/bios-settings.htm).
+Oracle's public HPC documentation describes cluster networking for tightly coupled workloads and RDMA. This makes east-west traffic, congestion, placement, and observability relevant concepts when reasoning about GPU workloads. It does not prove this opening is on a specific GPU product team. [OCI high-performance computing](https://docs.oracle.com/en-us/iaas/Content/Compute/References/high-performance-compute.htm)
 
-## What the technical breadth implies
+Oracle's physical architecture documentation describes regions, availability domains, and fault domains. The security overview also describes isolation and layered security controls. These materials help ground discussions about blast radius, redundancy, failure domains, and safe operations in the public OCI model. [OCI physical architecture](https://docs.oracle.com/en-us/iaas/Content/GSG/Concepts/concepts-physical.htm) · [OCI security services](https://docs.oracle.com/en-us/iaas/Content/Security/Concepts/security_features.htm)
 
-### Accelerated packet paths
+## Engineering implications — analysis, not Oracle interview guidance
 
-DOCA Flow organizes packet processing around pipes and flow entries with matching, actions, and forwarding. This makes parsing, classification, steering, counters, and exception behavior useful topics to explain with a concrete packet trace. The documentation used here is an archived 2.8.0 release; it supports the architectural discussion, not a claim about the team’s current SDK version. A strong project explanation would distinguish policy installation from packet processing, and show how rule misses, counter changes, and software fallback are diagnosed. [NVIDIA DOCA Flow](https://docs.nvidia.com/doca/archive/2-8-0/DOCA%2BFlow/index.html).
+- **Data path performance:** show how a packet or I/O request travels from NIC or device, through queueing and memory ownership, into policy and onward. Benchmark throughput alongside p99 latency, CPU cost, queue pressure, packet loss, and fallback behavior.
+- **Offload boundaries:** a DPU can reduce host work, but correctness depends on policy placement, host/device ownership, telemetry, exception paths, and safe fallback. Explain what stays on host and what moves to the device.
+- **Failure semantics:** availability depends on bounded retries, load shedding, rate limiting, replication state, health signals, and recoverable upgrades. Explain how a component behaves during a partition or brownout, not only when everything is healthy.
+- **Hardware/software integration:** drivers, firmware, DMA, interrupts, NUMA locality, PCIe placement, and virtualization boundaries can determine end-to-end performance. Describe ownership and teardown as carefully as the fast path.
+- **Operational quality:** dashboards, KPIs, fault injection, hardware-in-the-loop tests, health gates, rollback, and security remediation turn a fast design into a system that can be changed safely.
 
-### Kernel, DMA, and device ownership
+## Resume-to-role evidence
 
-Linux’s DMA guide separates CPU virtual addresses from device-visible DMA addresses and describes mapping, synchronization, and coherent versus streaming allocations. For this role, an engineering discussion should follow buffer ownership through submission, hardware access, completion, and reclamation. Memory ordering and teardown matter as much as steady-state throughput. Explain which layer guarantees visibility and which error paths release resources. [Linux DMA mapping guide](https://docs.kernel.org/core-api/dma-api-howto.html).
+The attached resume reports 8+ years spanning core infrastructure, embedded Linux, data-plane networking, storage, firmware, and platform bring-up. Its experience bullets report:
 
-### Virtualization boundaries
+- Sprouts AI: 3× packet throughput to 12 Mpps per core with C++/DPDK; 30% host CPU cores freed using BlueField/ConnectX, DOCA, SR-IOV, and vDPA; 20% higher GPU utilization after analyzing RDMA/RoCE and AllReduce behavior; 99.99% availability under dependency outages; 40% lower MTTR with telemetry, IaC/CI/CD, and zero-downtime upgrades.
+- Resilience Inc: 2.5× NVMe I/O throughput and 40% lower p99 latency; 99.99% uptime with no customer maintenance windows; 20+ pre-production durability defects caught with fault injection; 40% lower host CPU involvement in packet forwarding with P4; 60% faster rollout through HIL automation and Terraform.
+- Tata Steel: three ARM/Intel embedded Linux controller bring-ups; 90% less sensor data loss using kernel drivers; 45% better control-loop determinism; 35% fewer firmware field failures; 60% less manual test effort, with mentoring for five engineers.
 
-KVM exposes distinct system, VM, vCPU, and device interfaces through file descriptors and ioctls; capability checks determine supported extensions. Virtio uses shared virtqueues to communicate between drivers and devices. Together these provide a useful framework for explaining guest memory, MMIO exits, notifications, queue ownership, and multithreaded vCPU behavior. The resume’s Oxide-HV project is a relevant demonstration, but its description does not establish production deployment or every advanced virtualization feature listed in the skill section. [KVM API](https://docs.kernel.org/virt/kvm/api.html), [Virtio on Linux](https://docs.kernel.org/driver-api/virtio/virtio.html).
+These experiences connect directly to the posting's combination of accelerated data paths, Linux and device-level engineering, reliability, observability, safe rollouts, and technical leadership. The portfolio uses the resume's own quantified results, without extending them to broader claims.
 
-### Fleet reliability
+## Project selection and link policy
 
-The posting combines correctness and durability with availability under partitions, brownouts, and upgrades. My inference is that a compelling design narrative should connect fast data paths with safe control-plane changes: version compatibility, queue draining, replication state, bounded retry behavior, admission control, health signals, and rollback decisions. Throughput gains should be discussed alongside p99 latency, host CPU cost, and degraded-mode behavior. A conceptual diagram is useful, but should never look like an actual live production dashboard.
+Oxide-HV and Character Device Driver are featured because their supplied descriptions demonstrate hypervisor and kernel-driver work. All 23 supplied projects are listed with their source repositories. Technical Demo links appear only for the four projects for which the user supplied demo URLs: Oxide-HV, TradeSentinel, AskMyStore, and STRANGERS. EXPOS is listed once. The IEEE publication and certificate links are in the research section.
 
-## Resume evidence and presentation decisions
+## Suggested preparation topics
 
-The resume reports 99.99% availability for a 12K+ bare-metal fleet, a 20% host CPU reduction and 25% packet-processing throughput improvement through BlueField/DOCA work, and 300+ zero-downtime in-service upgrades with sub-30-second failover. Those are candidate-supplied claims, not independently audited results. The site reproduces all 15 experience bullets verbatim.
+These prompts are my analysis of the job and resume, not disclosed Oracle interview questions:
 
-The Resilience incident-reduction bullet explicitly says “Targeted a 25% cut.” The portfolio preserves that qualification and does not convert the target into an achieved result.
-
-The featured projects are Oxide-HV and Character Device Driver, using the exact descriptions in this resume. Other supplied projects remain accessible through source links. Only TradeSentinel, AskMyStore, Strangers, and Oxide-HV receive Technical Demo links because those were supplied. EXPOS appears once because both user references point to the same repository.
-
-The public site expresses an interest in tracing failures across kernel, device, and service boundaries. Its animated chip/rack background and conceptual systems diagrams reflect the role’s hardware-aware engineering scope without naming an application target or implying employment at Oracle.
-
-## Preparation themes inferred from the evidence
-
-- Walk one packet through parsing, classification, hardware steering, fallback, and counters; explain why throughput improved without worsening tail latency.
-- Reconstruct a kernel/firmware failure using interrupts, DMA ownership, logs, and a reproducible regression.
-- Explain a vCPU/MMIO/virtqueue interaction with precise resource ownership.
-- Describe an upgrade while a component is degraded: compatibility checks, traffic handling, failover, and rollback.
-- Connect a brownout signal to load shedding, bounded retries, durability, and an SLO.
-- Explain how design reviews and operational readiness helped the six mentored engineers.
-
-These are preparation suggestions inferred from the posting and resume, not confirmed interview questions.
-
+1. Trace a packet through the DPDK or P4 path and explain throughput, CPU, latency, and fallback measurements.
+2. Describe DPU offload boundaries, control-plane updates, telemetry, and recovery when the device or link fails.
+3. Explain DMA/buffer ownership, NUMA placement, polled queues, and p99 results in the NVMe work.
+4. Walk through an in-service upgrade during partial failure: compatibility, traffic management, health gates, rollback, and SLO evidence.
+5. Connect GPU AllReduce timing to RDMA/RoCE counters, packet loss, congestion controls, and utilization.
+6. Explain how fault-injection and HIL tests exposed durability or firmware defects before release.
